@@ -1,0 +1,135 @@
+.app-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 16px;
+    min-height: 100vh;
+}
+
+.search-controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.search-input {
+    width: 300px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.search-btn {
+    padding: 8px 12px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+.search-btn:disabled,
+.clear-btn {
+    background-color: #cccccc;
+}
+
+.clear-btn:hover {
+    background-color: #aaaaaa;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-auto-rows: 200px;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 50vh;
+}
+
+.photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+.photo:nth-child(5n+1) {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.photo:nth-child(3n+3) {
+    grid-row: span 2;
+}
+
+body.light {
+    --background-color: #f9f9f9;
+    --text-color: #333;
+    --button-background: #007bff;
+    --button-text: white;
+}
+
+.app-container.light {
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+
+body.dark {
+    --background-color: #333;
+    --text-color: #f9f9f9;
+    --button-background: #555;
+    --button-text: #ddd;
+}
+
+.app-container.dark {
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+.theme-toggle {
+    margin: 10px;
+    background-color: var(--button-background);
+    color: var(--button-text);
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+}
+
+.theme-toggle-container {
+    text-align: right;
+    padding: 0 0 16px;
+}
+
+.theme-toggle:hover {
+    background-color: #0056b3;
+}
+
+.no-photos {
+    text-align: center;
+    color: #666;
+    width: 100%;
+    padding: 16px;
+    grid-column: 1 / -1;
+}
