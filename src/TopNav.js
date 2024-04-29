@@ -1,18 +1,18 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
-function TopNav({setFavoritesView, toggleTheme, theme}) {
-
+function TopNav({toggleTheme, theme}) {
     return (
         <div className="top-nav">
             <div className="nav-controls">
-                <button onClick={() => setFavoritesView(false)} className="nav-btn">Home</button>
-                <button onClick={() => setFavoritesView(true)} className="nav-btn">Favorites</button>
+                <Link to="/" className="nav-btn">Home</Link>
+                <Link to="/favorites" className="nav-btn">Favorites</Link>
                 <button onClick={toggleTheme} className="theme-toggle">
                     {theme === 'light' ? 'Switch to Dark' : 'Switch to Light'}
                 </button>
             </div>
         </div>
-    )
+    );
 }
 
 export default TopNav;

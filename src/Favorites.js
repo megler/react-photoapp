@@ -12,16 +12,19 @@ function Favorites() {
     };
 
     return (
-        <>
+        <div className="photo-grid">
             {favorites.map(photo => (
+
                 <img key={photo.id}
                      src={`${photo.urls.raw}&w=300&dpr=2`}
                      alt={photo.description || "Favorite photo"}
                      className="photo"
                      onClick={() => removeFavorite(photo.id)}/>
+
             ))}
-            {favorites.length === 0 && <p>No favorites yet!</p>}
-        </>
+            {
+                favorites.length === 0 && <p>No favorites yet!</p>}
+        </div>
     );
 }
 

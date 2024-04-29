@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import SearchControls from './SearchControls';
 import TopNav from "./TopNav"
 import Favorites from "./Favorites";
@@ -15,7 +16,7 @@ function App() {
         return localStorage.getItem("theme") || 'light';
     });
     const [fetchPhotos, setFetchPhotos] = useState(true);
-    const [favoritesView, setFavoritesView] = useState(false);
+
 
     useEffect(() => {
         document.body.className = theme;
@@ -94,29 +95,31 @@ function App() {
 
 
     return (
-        <div className={`app-container ${theme}`}>
-            <TopNav setFavoritesView={setFavoritesView} toggleTheme={toggleTheme} theme={theme}/>
-            <SearchControls
-                query={query} setQuery={setQuery}
-                orderBy={orderBy} setOrderBy={setOrderBy}
-                perPage={perPage} setPerPage={setPerPage}
-                nextPage={nextPage} previousPage={previousPage}
-                clearSearch={clearSearch} page={page}
-                triggerFetch={triggerFetch}
-            />
-            <div className="photo-grid">
-                {favoritesView ? (
-                    <Favorites/>
-                ) : (
-                    photos.length > 0 && photos.map(photo => (
-                        <img key={photo.id} src={`${photo.urls.raw}&w=300&dpr=2`} alt={photo.description}
-                             className="photo" onClick={() => addFavorite(photo)}/>
-                    ))
-                )}
+        <Router>
+            <div className={`app-container ${theme}`}>
+                <TopNav toggleTheme={toggleTheme} theme={theme}/>
+                <SearchControls
+                    query={query} setQuery={setQuery}
+                    orderBy={orderBy} setOrderBy={setOrderBy}
+                    perPage={perPage} setPerPage={setPerPage}
+                    nextPage={nextPage} previousPage={previousPage}
+                    clearSearch={clearSearch} page={page}
+                    triggerFetch={triggerFetch}
+                />
+                <Routes>
+                    <Route path="/" element={
+                        <div className="photo-grid">
+                            {photos.map(photo => (
+                                <img key={photo.id} src={`${photo.urls.raw}&w=300&dpr=2`} alt={photo.description}
+                                     className="photo" onClick={() => addFavorite(photo)}/>
+                            ))}
+                        </div>}
+                    />
+                    <Route path="/favorites" element={<Favorites/>}/>
+                </Routes>
             </div>
-        </div>
+        </Router>
     );
-
 }
 
 export default App;
