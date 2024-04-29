@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
 
 function App() {
@@ -6,46 +6,53 @@ function App() {
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
-    const [orderBy, setOrderBy] = useState('relevant');
+    const [orderBy, setOrderBy] = useState('latest');
     const [contentFilter, setContentFilter] = useState('low');
     const [theme, setTheme] = useState('light');
-
+    const [fetchPhotos, setFetchPhotos] = useState(true);
 
     useEffect(() => {
         document.body.className = theme;
     }, [theme]);
 
 
-
     useEffect(() => {
-        if (query !== '') {
+        if (fetchPhotos) {
             const accessKey = process.env.REACT_APP_UNSPLASH_ACCESS_KEY;
-            const url = new URL('https://api.unsplash.com/search/photos');
+            const baseURL = 'https://api.unsplash.com/';
+            let url = new URL(query === '' ? `${baseURL}photos` : `${baseURL}search/photos`);
+
             const params = {
-                query,
                 page,
                 per_page: perPage,
                 order_by: orderBy,
-                content_filter: contentFilter,
                 client_id: accessKey
             };
+
+            if (query !== '') {
+                params.query = query;
+                if (contentFilter) {
+                    params.content_filter = contentFilter;
+                }
+            }
+            console.log("Fetching URL:", url.href);
+            console.log("With params:", params);
+
             url.search = new URLSearchParams(params).toString();
 
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    if (data && data.results) {
-                        setPhotos(data.results);
-                    } else {
-                        setPhotos([]);
-                    }
+                    const images = data.results ? data.results : data;
+                    setPhotos(images);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     setPhotos([]);
                 });
         }
-    }, [query, page, perPage, orderBy, contentFilter]);
+        setFetchPhotos(false);
+    }, [query, page, perPage, orderBy, contentFilter, fetchPhotos]);
 
     function toggleTheme() {
         setTheme(theme === 'light' ? 'dark' : 'light');
@@ -55,9 +62,40 @@ function App() {
         setQuery('');
         setPhotos([]);
         setPage(1);
-        setOrderBy('relevant');
+        setOrderBy('latest');
         setContentFilter('low');
+        setFetchPhotos(false);
     }
+
+    function handleInputChange(e) {
+        setQuery(e.target.value);
+        if (e.target.value !== '') {
+            setFetchPhotos(true);
+        }
+    }
+
+    function handlePerPageChange(e) {
+        const newPerPage = Number(e.target.value);
+        setPerPage(newPerPage);
+        setFetchPhotos(true);
+    }
+
+
+    function handleOrderChange(e) {
+        setOrderBy(e.target.value);
+        setFetchPhotos(true);
+    }
+
+    function nextPage() {
+        setPage(prevPage => prevPage + 1);
+        setFetchPhotos(true);
+    }
+
+    function previousPage() {
+        setPage(prevPage => prevPage - 1);
+        setFetchPhotos(true);
+    }
+
 
     return (
         <div className={`app-container ${theme}`}>
@@ -70,39 +108,49 @@ function App() {
                 <input
                     type="text"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={handleInputChange}
                     placeholder="Search for photos"
                     className="search-input"
+                    name="photoSearch"
+                    id="photoSearch"
                 />
-                <select className="search-select" value={orderBy} onChange={(e) => setOrderBy(e.target.value)}>
+                <select className="search-select" value={orderBy} onChange={handleOrderChange} name="orderBy"
+                        id="orderBy">
                     <option value="relevant">Relevant</option>
                     <option value="latest">Latest</option>
                 </select>
-                <select className="search-select" value={contentFilter}
-                        onChange={(e) => setContentFilter(e.target.value)}>
-                    <option value="low">Low</option>
-                    <option value="high">High</option>
+
+                <select className="search-select" value={perPage} onChange={handlePerPageChange} name="perPage"
+                        id="perPage">
+                    <option value="5">5 per page</option>
+                    <option value="10">10 per page</option>
+                    <option value="15">15 per page</option>
+                    <option value="20">20 per page</option>
+                    <option value="25">25 per page</option>
                 </select>
-                <button className="search-btn" onClick={() => setPage(prev => prev + 1)}>Next</button>
-                <button className="search-btn" disabled={page === 1} onClick={() => setPage(prev => prev - 1)}>Prev
-                </button>
+
+
+                <button className="search-btn" onClick={nextPage}>Next</button>
+                <button className="search-btn" disabled={page === 1} onClick={previousPage}>Prev</button>
                 <button className="search-btn clear-btn" onClick={clearSearch}>Clear</button>
             </div>
             <div className="photo-grid">
                 {photos.length > 0 ? (
                     photos.map(photo => (
-                        <img key={photo.id} src={photo.urls.small} alt={photo.description || 'Unsplash photo'}
-                             className="photo"/>
+                        <img
+                            key={photo.id}
+                            src={`${photo.urls.raw}&w=300&dpr=2`}
+                            alt={photo.description || 'Unsplash photo'}
+                            className="photo"
+                        />
                     ))
-                ) : ( <p className="no-photos">No photos found.</p>
-
+                ) : (
+                    <p className="no-photos">All clear!</p>
                 )}
             </div>
+
         </div>
     );
-
-
 }
-
 
 export default App;
