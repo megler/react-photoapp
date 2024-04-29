@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import SearchControls from './SearchControls';
+import TopNav from "./TopNav"
+import Favorites from "./Favorites";
 import './App.css';
 
 function App() {
@@ -9,13 +11,16 @@ function App() {
     const [perPage, setPerPage] = useState(10);
     const [orderBy, setOrderBy] = useState('latest');
     const [contentFilter, setContentFilter] = useState('low');
-    const [theme, setTheme] = useState('light');
+    const [theme, setTheme] = useState(() => {
+        return localStorage.getItem("theme") || 'light';
+    });
     const [fetchPhotos, setFetchPhotos] = useState(true);
+    const [favoritesView, setFavoritesView] = useState(false);
 
     useEffect(() => {
         document.body.className = theme;
+        localStorage.setItem("theme", theme);
     }, [theme]);
-
 
     useEffect(() => {
         if (fetchPhotos) {
@@ -79,14 +84,18 @@ function App() {
         setFetchPhotos(true);
     }
 
+    const addFavorite = (photo) => {
+        if (window.confirm("Would you like to add this image to your favorites?")) {
+            const currentFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+            const newFavorites = [...currentFavorites, photo];
+            localStorage.setItem("favorites", JSON.stringify(newFavorites));
+        }
+    };
+
 
     return (
         <div className={`app-container ${theme}`}>
-            <div className="theme-toggle-container">
-                <button onClick={toggleTheme} className="theme-toggle">
-                    {theme === 'light' ? 'Switch to Dark' : 'Switch to Light'}
-                </button>
-            </div>
+            <TopNav setFavoritesView={setFavoritesView} toggleTheme={toggleTheme} theme={theme}/>
             <SearchControls
                 query={query} setQuery={setQuery}
                 orderBy={orderBy} setOrderBy={setOrderBy}
@@ -96,17 +105,18 @@ function App() {
                 triggerFetch={triggerFetch}
             />
             <div className="photo-grid">
-                {photos.length > 0 ? (
-                    photos.map(photo => (
-                        <img key={photo.id} src={`${photo.urls.raw}&w=300&dpr=2`} alt={photo.description}
-                             className="photo"/>
-                    ))
+                {favoritesView ? (
+                    <Favorites/>
                 ) : (
-                    <p className="no-photos">All clear!</p>
+                    photos.length > 0 && photos.map(photo => (
+                        <img key={photo.id} src={`${photo.urls.raw}&w=300&dpr=2`} alt={photo.description}
+                             className="photo" onClick={() => addFavorite(photo)}/>
+                    ))
                 )}
             </div>
         </div>
     );
+
 }
 
 export default App;

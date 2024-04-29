@@ -1,8 +1,22 @@
+body.light {
+    --background-color: #f9f9f9;
+    --text-color: #333;
+    --button-background: #007bff;
+    --button-text: white;
+}
+
+body.dark {
+    --background-color: #333;
+    --text-color: #f9f9f9;
+    --button-background: #555;
+    --button-text: #ddd;
+}
+
 .app-container {
-    max-width: 100%;
     margin: 0 auto;
-    padding: 16px;
+    max-width: 100%;
     min-height: 100vh;
+    padding: 16px;
 }
 
 .search-controls {
@@ -41,24 +55,25 @@
     background-color: #0056b3;
 }
 
-.search-btn:disabled,
-.clear-btn {
+.search-btn:disabled {
     background-color: #cccccc;
 }
 
-.clear-btn:hover {
-    background-color: #aaaaaa;
+.clear-btn {
+    background-color: #22C929;
 }
 
+.clear-btn:hover {
+    background-color: #128012;
+}
+
+/* Mosaic Layout Credit: https://medium.com/@axel/mosaic-layouts-with-css-grid-d13f4e3ed2ae */
 .photo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-auto-rows: 200px;
-    gap: 16px;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 50vh;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 1rem;
+    max-width: 1440px;
+    margin: 0 auto;
 }
 
 .photo {
@@ -66,38 +81,27 @@
     height: 100%;
     object-fit: cover;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    grid-column: span 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.photo:nth-child(1) {
+    grid-column: span 2;
     grid-row: span 1;
 }
 
-.photo:nth-child(5n+1) {
+.photo:nth-child(2),
+.photo:nth-child(3) {
     grid-column: span 2;
-    grid-row: span 2;
 }
 
-.photo:nth-child(3n+3) {
-    grid-row: span 2;
-}
-
-body.light {
-    --background-color: #f9f9f9;
-    --text-color: #333;
-    --button-background: #007bff;
-    --button-text: white;
+.photo:nth-child(4),
+.photo:nth-child(5) {
+    grid-column: span 3;
 }
 
 .app-container.light {
     background: var(--background-color);
     color: var(--text-color);
-}
-
-
-body.dark {
-    --background-color: #333;
-    --text-color: #f9f9f9;
-    --button-background: #555;
-    --button-text: #ddd;
 }
 
 .app-container.dark {
@@ -114,7 +118,6 @@ body.dark {
     padding: 8px 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-
 }
 
 .theme-toggle-container {
@@ -132,4 +135,48 @@ body.dark {
     width: 100%;
     padding: 16px;
     grid-column: 1 / -1;
+}
+
+/* Mosaic Layout Credit: https://medium.com/@axel/mosaic-layouts-with-css-grid-d13f4e3ed2ae */
+@media screen and (max-width: 650px) {
+    .photo-grid {
+        display: block;
+    }
+
+    .photo {
+        margin-bottom: 1rem;
+    }
+}
+
+.nav-btn {
+    padding: 8px 12px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 8px;
+}
+
+.nav-btn:hover {
+    background-color: #0056b3;
+}
+
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+.theme-toggle, .nav-btn {
+    margin-left: 8px;
 }
