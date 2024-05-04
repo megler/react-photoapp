@@ -16,7 +16,7 @@
     "yet-another-react-lightbox": "^3.17.5"
   },
   "scripts": {
-    "start": "serve -s build",
+    "start": "react-scripts build",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
