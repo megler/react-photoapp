@@ -3,6 +3,8 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import {useTheme} from './ThemeManager';
 import useFetchPhotos from './FetchPhotos';
 import SearchControls from './SearchControls';
+import Lightbox from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
 import TopNav from "./TopNav";
 import Favorites from "./Favorites";
 import './MyApp.css';
@@ -13,6 +15,8 @@ function MyApp() {
     const [perPage, setPerPage] = useState(20);
     const [orderBy, setOrderBy] = useState('latest');
     const [contentFilter, setContentFilter] = useState('low');
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
     const {photos, setFetchPhotos, loading} = useFetchPhotos(query, page, perPage, orderBy, contentFilter);
     const [theme, toggleTheme] = useTheme();
 
@@ -22,7 +26,7 @@ function MyApp() {
         setOrderBy('latest');
         setContentFilter('low');
         setPerPage(20);
-        setFetchPhotos(true);
+        triggerFetch();
     }
 
     function nextPage() {
@@ -38,6 +42,11 @@ function MyApp() {
     function triggerFetch() {
         setFetchPhotos(true);
     }
+
+    const handleImageClick = photo => {
+        setSelectedImage(photo);
+        setLightboxOpen(true);
+    };
 
     const addFavorite = (photo) => {
         if (window.confirm("Would you like to add this image to your favorites?")) {
@@ -68,7 +77,7 @@ function MyApp() {
                                     {photos.map(photo => (
                                         <img key={photo.id} src={`${photo.urls.raw}&w=300&dpr=2`}
                                              alt={photo.description}
-                                             className="photo" onClick={() => addFavorite(photo)}/>
+                                             className="photo" onClick={() => handleImageClick(photo)}/>
                                     ))}
                                 </div>
                             ) : (
@@ -77,6 +86,26 @@ function MyApp() {
                     }/>
                     <Route path="/favorites" element={<Favorites/>}/>
                 </Routes>
+                {selectedImage && (
+                    <Lightbox
+                        open={lightboxOpen}
+                        close={() => setLightboxOpen(false)}
+                        slides={[{src: selectedImage.urls.raw}]}
+                        render={{
+                            buttonPrev: () => null,
+                            buttonNext: () => null
+                        }}
+                        toolbar={{
+                            buttons: [
+                                <button key="add-to-favorites" type="button" className="favorites-btn"
+                                        onClick={() => addFavorite(selectedImage)}>
+                                    Add to Favorites
+                                </button>,
+                                "close",
+                            ],
+                        }}
+                    />
+                )}
             </div>
         </Router>
     );
