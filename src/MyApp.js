@@ -10,10 +10,10 @@ import './MyApp.css';
 function MyApp() {
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
-    const [perPage, setPerPage] = useState(10);
+    const [perPage, setPerPage] = useState(20);
     const [orderBy, setOrderBy] = useState('latest');
     const [contentFilter, setContentFilter] = useState('low');
-    const {photos, setFetchPhotos} = useFetchPhotos(query, page, perPage, orderBy, contentFilter);
+    const {photos, setFetchPhotos, loading} = useFetchPhotos(query, page, perPage, orderBy, contentFilter);
     const [theme, toggleTheme] = useTheme();
 
     function clearSearch() {
@@ -21,7 +21,7 @@ function MyApp() {
         setPage(1);
         setOrderBy('latest');
         setContentFilter('low');
-        setPerPage(10);
+        setPerPage(20);
         setFetchPhotos(true);
     }
 
@@ -61,13 +61,20 @@ function MyApp() {
                 />
                 <Routes>
                     <Route path="/" element={
-                        <div className="photo-grid">
-                            {photos.map(photo => (
-                                <img key={photo.id} src={`${photo.urls.raw}&w=300&dpr=2`} alt={photo.description}
-                                     className="photo" onClick={() => addFavorite(photo)}/>
-                            ))}
-                        </div>}
-                    />
+                        loading ?
+                            <div className="loader"></div> :
+                            photos.length > 0 ? (
+                                <div className="photo-grid">
+                                    {photos.map(photo => (
+                                        <img key={photo.id} src={`${photo.urls.raw}&w=300&dpr=2`}
+                                             alt={photo.description}
+                                             className="photo" onClick={() => addFavorite(photo)}/>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="no-photos">No images found</div>
+                            )
+                    }/>
                     <Route path="/favorites" element={<Favorites/>}/>
                 </Routes>
             </div>
