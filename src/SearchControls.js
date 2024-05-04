@@ -10,53 +10,39 @@ function SearchControls({
                             nextPage,
                             previousPage,
                             clearSearch,
-                            page,
                             triggerFetch
                         }) {
-    function handleInputChange(e) {
-        setQuery(e.target.value);
+    const handleSubmit = (e) => {
+        e.preventDefault();
         triggerFetch();
-    }
-
-    function handlePerPageChange(e) {
-        setPerPage(Number(e.target.value));
-        triggerFetch();
-    }
-
-    function handleOrderChange(e) {
-        setOrderBy(e.target.value);
-        triggerFetch();
-    }
+    };
 
     return (
-        <div className="search-controls">
+        <form onSubmit={handleSubmit} className="search-controls">
             <input
                 type="text"
+                placeholder="Search photos..."
                 value={query}
-                onChange={handleInputChange}
-                placeholder="Search for photos"
+                onChange={(e) => setQuery(e.target.value)}
                 className="search-input"
-                name="photoSearch"
-                id="photoSearch"
             />
-            <select className="search-select" value={orderBy} onChange={handleOrderChange} name="orderBy" id="orderBy">
-                <option value="relevant">Relevant</option>
+            <select value={orderBy} onChange={(e) => setOrderBy(e.target.value)} className="search-select">
                 <option value="latest">Latest</option>
+                <option value="oldest">Oldest</option>
+                <option value="popular">Most Popular</option>
             </select>
-
-            <select className="search-select" value={perPage} onChange={handlePerPageChange} name="perPage"
-                    id="perPage">
-                <option value="5">5 per page</option>
-                <option value="10">10 per page</option>
-                <option value="15">15 per page</option>
-                <option value="20">20 per page</option>
-                <option value="25">25 per page</option>
+            <select value={perPage} onChange={(e) => setPerPage(e.target.value)} className="search-select">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
             </select>
-
-            <button className="search-btn" onClick={nextPage}>Next</button>
-            <button className="search-btn" disabled={page === 1} onClick={previousPage}>Prev</button>
-            <button className="search-btn clear-btn" onClick={clearSearch}>Clear</button>
-        </div>
+            <button type="submit" className="search-btn">Search</button>
+            <button type="button" onClick={clearSearch} className="search-btn clear-btn">Clear</button>
+            <button type="button" onClick={previousPage} className="nav-btn">Previous</button>
+            <button type="button" onClick={nextPage} className="nav-btn">Next</button>
+        </form>
     );
 }
 
