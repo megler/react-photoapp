@@ -9,17 +9,34 @@ import TopNav from "./TopNav";
 import Favorites from "./Favorites";
 import './MyApp.css';
 
+/**
+ * Main application component that sets up routing and state management for photo browsing and favorites handling.
+ * Integrates with Unsplash API for fetching photos, managing theme, and displaying them with pagination and lightbox modal.
+ *
+ * @component
+ * @returns {React.ReactElement} The MyApp component as a React element.
+ */
 function MyApp() {
+    // State hooks for managing search parameters
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(20);
     const [orderBy, setOrderBy] = useState('latest');
     const [contentFilter, setContentFilter] = useState('low');
+
+    // State hooks for managing lightbox display and the selected image
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+
+    // Custom hook for fetching photos from the Unsplash API
     const {photos, setFetchPhotos, loading} = useFetchPhotos(query, page, perPage, orderBy, contentFilter);
+
+    // Custom hook for theme management
     const [theme, toggleTheme] = useTheme();
 
+    /**
+     * Clears the current search parameters and re-triggers photo fetching.
+     */
     function clearSearch() {
         setQuery('');
         setPage(1);
@@ -29,25 +46,42 @@ function MyApp() {
         triggerFetch();
     }
 
+    /**
+     * Increments the page number to fetch the next set of photos.
+     */
     function nextPage() {
         setPage(prevPage => prevPage + 1);
         setFetchPhotos(true);
     }
 
+    /**
+     * Decrements the page number to fetch the previous set of photos.
+     */
     function previousPage() {
         setPage(prevPage => prevPage - 1);
         setFetchPhotos(true);
     }
 
+    /**
+     * Triggers a new fetch of photos.
+     */
     function triggerFetch() {
         setFetchPhotos(true);
     }
 
+    /**
+     * Handles click events on individual photos to open them in a lightbox.
+     * @param {Object} photo - The photo object to display in the lightbox.
+     */
     const handleImageClick = photo => {
         setSelectedImage(photo);
         setLightboxOpen(true);
     };
 
+    /**
+     * Adds the selected photo to the favorites in localStorage.
+     * @param {Object} photo - The photo object to add to favorites.
+     */
     const addFavorite = (photo) => {
         if (window.confirm("Would you like to add this image to your favorites?")) {
             const currentFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
