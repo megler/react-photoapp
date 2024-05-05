@@ -10,11 +10,14 @@ import Favorites from "./Favorites";
 import './MyApp.css';
 
 /**
- * Main application component that sets up routing and state management for photo browsing and favorites handling.
- * Integrates with Unsplash API for fetching photos, managing theme, and displaying them with pagination and lightbox modal.
+ * MyApp serves as the main module for the application. It coordinates the application's routing,
+ * state management, and integrates with the Unsplash API for fetching photos. It manages user interactions
+ * such as search, pagination, favorites, and theming. This module encompasses multiple components like TopNav,
+ * SearchControls, Favorites, and uses Lightbox for displaying images.
  *
- * @component
- * @returns {React.ReactElement} The MyApp component as a React element.
+ *
+ * @module MyApp
+ * @returns {React.ReactElement} A React element representing the main user interface of the photo browsing application.
  */
 function MyApp() {
     // State hooks for managing search parameters
